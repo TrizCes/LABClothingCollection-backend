@@ -74,14 +74,35 @@ namespace ClothingCollectionAPI.Controllers
         }
 
         // POST: api/Usuarios
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
+        public async Task<ActionResult<Usuario>> Post([FromBody] Usuario usuario)
         {
+            if (string.IsNullOrEmpty(usuario.NomeCompleto) ||
+                string.IsNullOrEmpty(usuario.CpfOuCnpj) || 
+                string.IsNullOrEmpty(usuario.Email) ||
+                string.IsNullOrEmpty(usuario.TipoUsuario) ||
+                string.IsNullOrEmpty(usuario.StatusUsuario)
+                )
+            {
+                return BadRequest("Os campos obrigatórios devem ser preenchidos.");
+            }
+
+            bool docConflitante = await _context.Usuario.AnyAsync(u => u.CpfOuCnpj == usuario.CpfOuCnpj);
+            if (docConflitante)
+            {
+                return Conflict("O CPF ou CNPJ informado já foi cadastrado.");
+            }
+
             _context.Usuario.Add(usuario);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUsuario", new { id = usuario.Id }, usuario);
+            return CreatedAtAction( 
+                "Novo usuario adicionado", 
+                new { 
+                    identificador = usuario.Id, 
+                    tipo = usuario.TipoUsuario },
+                usuario
+                );
         }
 
         // DELETE: api/Usuarios/5
