@@ -36,7 +36,11 @@ namespace ClothingCollectionAPI
             });
 
             services.AddDbContext<UsuariosContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("ClothingCollectionAPIContext")));
+                    options.UseSqlServer(Configuration.GetConnectionString("ServerConnection")));
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
