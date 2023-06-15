@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClothingCollectionAPI.Context;
 using ClothingCollectionAPI.Models;
-using ClothingCollectionAPI.Interface;
 
 namespace ClothingCollectionAPI.Controllers
 {
@@ -76,17 +75,24 @@ namespace ClothingCollectionAPI.Controllers
         }
 
         // PUT: api/Usuarios/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] IUsuarioAtualizacao usuario)
+        public async Task<IActionResult> Put(int id, [FromBody] UsuarioAtualizacao usuarioAtualizacao)
         {
             bool existeUsuario = await _context.Usuarios
                                 .AnyAsync(x => x.Id == id) 
                                 .ConfigureAwait(true);
             if (!existeUsuario)
             {
-                return BadRequest("Identificador não consta nos nossos arquivos");
+                return NotFound("Identificador não consta nos nossos arquivos");
             }
+
+            var usuario = await _context.Usuarios.FindAsync(id);
+
+            usuario.NomeCompleto = usuarioAtualizacao.NomeCompleto;
+            usuario.Genero = usuarioAtualizacao.Genero;
+            usuario.DataNascimento = usuarioAtualizacao.DataNascimento;
+            usuario.Telefone = usuarioAtualizacao.Telefone;
+            usuario.TipoUsuario = usuarioAtualizacao.TipoUsuario;
 
             _context.Entry(usuario).State = EntityState.Modified;
 
@@ -96,9 +102,54 @@ namespace ClothingCollectionAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UsuarioExists(id))
+                bool usuarioConsta = await _context.Usuarios
+                                .AnyAsync(x => x.Id == id)
+                                .ConfigureAwait(true);
+                if (!usuarioConsta)
                 {
-                    return NotFound("Erro ao buscar o registro");
+                    return BadRequest("Solicitação inválida");
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Ok(usuario);
+        }
+
+        // PUT: api/Usuarios/5/status
+        [HttpPut("{id}/status")]
+        public async Task<IActionResult> PutStatus(int id, [FromBody] string status)
+        {
+            bool existeUsuario = await _context.Usuarios
+                                .AnyAsync(x => x.Id == id)
+                                .ConfigureAwait(true);
+            if (!existeUsuario)
+            {
+                return NotFound("Identificador não consta nos nossos arquivos");
+            }
+
+
+            var usuario = await _context.Usuarios.FindAsync(id);
+
+            try
+            {
+         
+                usuario.StatusUsuario = status;
+
+                _context.Entry(usuario).State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                bool usuarioConsta = await _context.Usuarios
+                                .AnyAsync(x => x.Id == id)
+                                .ConfigureAwait(true);
+                if (!usuarioConsta)
+                {
+                    return BadRequest("Solicitação inválida");
                 }
                 else
                 {
@@ -127,9 +178,5 @@ namespace ClothingCollectionAPI.Controllers
             return NoContent();
         }
 
-        private bool UsuarioExists(int id)
-        {
-            return _context.Usuarios.Any(e => e.Id == id);
-        }
     }
 }
