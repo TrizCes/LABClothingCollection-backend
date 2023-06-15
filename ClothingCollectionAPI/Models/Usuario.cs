@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using ClothingCollectionAPI.Services;
 
 namespace ClothingCollectionAPI.Models
 {
@@ -19,10 +20,7 @@ namespace ClothingCollectionAPI.Models
             get { return _email; } 
             set 
             {
-                if (ValidarEmail(value))
-                    _email = value;
-                else
-                    throw new ArgumentException("Email inválido.");
+                _email = UsuarioService.ValidarEmail(value) ? value : throw new ArgumentException("Email inválido.");
             } 
         }
 
@@ -32,10 +30,7 @@ namespace ClothingCollectionAPI.Models
             get { return _tipoUsuario; }
             set
             {
-                if (ValidarTipoUsuario(value))
-                    _tipoUsuario = value;
-                else
-                    throw new ArgumentException("Tipo de usuário inválido.");
+                _tipoUsuario = UsuarioService.ValidarTipoUsuario(value) ? value : throw new ArgumentException("Tipo de usuário inválido.");
             }
         }
 
@@ -46,32 +41,10 @@ namespace ClothingCollectionAPI.Models
             get { return _statusUsuario; }
             set
             {
-                if (ValidarStatusUsuario(value))
-                    _statusUsuario = value;
-                else
-                    throw new ArgumentException("Status do usuário inválido.");
+                _statusUsuario = UsuarioService.ValidarStatusUsuario(value) ? value : throw new ArgumentException("Status do usuário inválido.");
             }
         }
 
-        private bool ValidarEmail(string email)
-        {
-            string pattern = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
-            Regex regex = new Regex(pattern);
-            return regex.IsMatch(email);
-        }
-
-        private bool ValidarTipoUsuario(string tipoUsuario)
-        {
-            return tipoUsuario == "Administrador" ||
-                   tipoUsuario == "Gerente" ||
-                   tipoUsuario == "Criador" ||
-                   tipoUsuario == "Outro";
-        }
-
-        private bool ValidarStatusUsuario(string statusUsuario)
-        {
-            return statusUsuario == "Ativo" ||
-                   statusUsuario == "Inativo";
-        }
+        
     }
 }

@@ -16,7 +16,7 @@ namespace ClothingCollectionAPI.Context
 
         public UsuariosContext() { }
 
-        public virtual DbSet<ClothingCollectionAPI.Models.Usuario> Usuario { get; set; }
+        public virtual DbSet<ClothingCollectionAPI.Models.Usuario> Usuarios { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
