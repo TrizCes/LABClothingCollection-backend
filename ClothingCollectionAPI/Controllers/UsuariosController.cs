@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClothingCollectionAPI.Context;
 using ClothingCollectionAPI.Models;
+using ClothingCollectionAPI.DTO;
 
 namespace ClothingCollectionAPI.Controllers
 {
@@ -23,9 +24,34 @@ namespace ClothingCollectionAPI.Controllers
 
         // GET: api/Usuarios
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuario()
+        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios([FromQuery] string status)
         {
-            return await _context.Usuarios.ToListAsync();
+            var usuariosLista = await _context.Usuarios.ToListAsync().ConfigureAwait(true);
+
+            if(status != null )
+            {
+                string maiusculaStatus = status.ToUpper();
+
+                if (maiusculaStatus == "ATIVO")
+                {
+                    //verificar usuarios com status igual ativo
+                    var usuariosAtivos = usuariosLista.Where(u =>
+                                                        u.StatusUsuario
+                                                        .ToUpper() == "ATIVO")
+                                                       .ToList();
+                    return Ok(usuariosAtivos);
+                }
+                else if (maiusculaStatus == "INATIVO")
+                {
+                    var usuariosInativos = usuariosLista.Where(u =>
+                                                        u.StatusUsuario
+                                                        .ToUpper() == "INATIVO")
+                                                       .ToList();
+                    return Ok(usuariosInativos);
+                }
+            }
+            
+            return Ok(usuariosLista);
         }
 
         // GET: api/Usuarios/5
@@ -76,7 +102,7 @@ namespace ClothingCollectionAPI.Controllers
 
         // PUT: api/Usuarios/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] UsuarioAtualizacao usuarioAtualizacao)
+        public async Task<IActionResult> Put(int id, [FromBody] UsuariosDto usuarioAtualizacao)
         {
             bool existeUsuario = await _context.Usuarios
                                 .AnyAsync(x => x.Id == id) 

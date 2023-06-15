@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ClothingCollectionAPI.Models
+namespace ClothingCollectionAPI.DTO
 {
-    public class UsuarioAtualizacao
+    public class UsuariosDto
     {
         private String _tipoUsuario;
         public string NomeCompleto { get; set; }
