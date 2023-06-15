@@ -45,11 +45,27 @@ namespace ClothingCollectionAPI.Controllers
         // PUT: api/Colecoes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutColecao(int id, Colecao colecao)
+        public async Task<IActionResult> PutColecao(int id, [FromBody] Colecao colecao)
         {
-            if (id != colecao.Id)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
+            }
+
+            bool existeColecao = await _context.Colecoes
+                                .AnyAsync(x => x.Id == id)
+                                .ConfigureAwait(true);
+            if (!existeColecao)
+            {
+                return NotFound("Identificador não consta nos nossos arquivos");
+            }
+
+            bool nomeConflitante = await _context.Colecoes
+                                            .AnyAsync(u =>
+                                            u.NomeColecao == colecao.NomeColecao);
+            if (nomeConflitante)
+            {
+                return Conflict("Já existe uma coleção cadastrada com esse nome");
             }
 
             _context.Entry(colecao).State = EntityState.Modified;
@@ -60,22 +76,15 @@ namespace ClothingCollectionAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ColecaoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest();    
             }
 
-            return NoContent();
+            return Ok(colecao);
         }
 
         // POST: api/Colecoes
         [HttpPost]
-        public async Task<ActionResult<Colecao>> PostColecao(Colecao colecao)
+        public async Task<ActionResult<Colecao>> PostColecao([FromBody] Colecao colecao)
         {
 
             if (!ModelState.IsValid)
@@ -92,6 +101,7 @@ namespace ClothingCollectionAPI.Controllers
             }
 
             _context.Colecoes.Add(colecao);
+
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetColecao), new { id = colecao.Id }, colecao);
@@ -113,9 +123,5 @@ namespace ClothingCollectionAPI.Controllers
             return NoContent();
         }
 
-        private bool ColecaoExists(int id)
-        {
-            return _context.Colecoes.Any(e => e.Id == id);
-        }
     }
 }
