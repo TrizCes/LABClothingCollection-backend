@@ -20,28 +20,28 @@ namespace ClothingCollectionAPI.Models
             get { return _email; } 
             set 
             {
-                _email = UsuarioService.ValidarEmail(value) ? value : throw new ArgumentException("Email inválido.");
+                _email = UsuarioService.ValidarEmail(value) ? value : null ;
             } 
         }
 
-        [Required(ErrorMessage = "O campo Tipo é de preenchimento obrigatório")]
+        [Required(ErrorMessage = "O campo TipoUsuario apenas aceita as opções: Administrador, Gerente, Criador, Outro")]
         [MaxLength(150, ErrorMessage = "O campo Tipo não pode exceder 150 caracteres")]
         public String TipoUsuario {
             get { return _tipoUsuario; }
             set
             {
-                _tipoUsuario = UsuarioService.ValidarTipoUsuario(value) ? value : throw new ArgumentException("Tipo de usuário inválido.");
+                _tipoUsuario = UsuarioService.ValidarTipoUsuario(value) ? value : null ;
             }
         }
 
-        [Required(ErrorMessage = "O campo Status é de preenchimento obrigatório")]
-        [MaxLength(150, ErrorMessage = "O campo Status não pode exceder 150 caracteres")]
+        [Required(ErrorMessage = "O campo StatusUsuario apenas aceita as opções: Ativo ou Inativo")]
+        [MaxLength(150, ErrorMessage = "O campo StatusUsuario não pode exceder 150 caracteres")]
         public String StatusUsuario
         {
             get { return _statusUsuario; }
             set
             {
-                _statusUsuario = UsuarioService.ValidarStatusUsuario(value) ? value : throw new ArgumentException("Status do usuário inválido.");
+                _statusUsuario = UsuarioService.ValidarStatusUsuario(value) ? value : null ;
             }
         }
 

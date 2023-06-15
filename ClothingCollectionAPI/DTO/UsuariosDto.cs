@@ -17,7 +17,7 @@ namespace ClothingCollectionAPI.DTO
             get { return _tipoUsuario; }
             set
             {
-                _tipoUsuario = UsuarioService.ValidarTipoUsuario(value) ? value : throw new ArgumentException("Tipo de usuário inválido.");
+                _tipoUsuario = UsuarioService.ValidarTipoUsuario(value) ? value : null ;
             }
         }
     }

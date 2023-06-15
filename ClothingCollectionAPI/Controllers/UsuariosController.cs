@@ -63,13 +63,14 @@ namespace ClothingCollectionAPI.Controllers
 
             if (usuario == null)
             {
-                return NotFound();
+                return NotFound("Id do usuario não encontrado");
             }
 
             return Ok(usuario);
         }
 
         // POST: api/Usuarios
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [HttpPost]
         public async Task<ActionResult<Usuario>> Post([FromBody] Usuario usuario)
         {
@@ -80,6 +81,18 @@ namespace ClothingCollectionAPI.Controllers
                 string.IsNullOrEmpty(usuario.StatusUsuario)
                 )
             {
+                if(usuario.Email == null)
+                {
+                    return BadRequest("O campo Email deve ser preenchido no formato correto;");
+                }
+                else if (usuario.TipoUsuario == null)
+                {
+                    return BadRequest();
+                }
+                else if (usuario.StatusUsuario == null)
+                {
+                    return BadRequest();
+                }
                 return BadRequest("Os campos obrigatórios devem ser preenchidos.");
             }
 
@@ -90,13 +103,14 @@ namespace ClothingCollectionAPI.Controllers
             }
 
             _context.Usuarios.Add(usuario);
+
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction( 
-                "Novo usuario adicionado", 
+            return CreatedAtAction(
+                nameof(GetUsuario), 
                 new { 
-                    identificador = usuario.Id, 
-                    tipo = usuario.TipoUsuario },
+                    Id = usuario.Id, 
+                    TipoUsuario = usuario.TipoUsuario },
                 usuario
                 );
         }
@@ -111,6 +125,11 @@ namespace ClothingCollectionAPI.Controllers
             if (!existeUsuario)
             {
                 return NotFound("Identificador não consta nos nossos arquivos");
+            }
+
+            if (usuarioAtualizacao.TipoUsuario == null)
+            {
+                return BadRequest();
             }
 
             var usuario = await _context.Usuarios.FindAsync(id);
@@ -134,7 +153,7 @@ namespace ClothingCollectionAPI.Controllers
                                 .ConfigureAwait(true);
                 if (!usuarioConsta)
                 {
-                    return BadRequest("Solicitação inválida");
+                    return BadRequest();
                 }
                 else
                 {
@@ -145,7 +164,8 @@ namespace ClothingCollectionAPI.Controllers
             return Ok(usuario);
         }
 
-        // PUT: api/Usuarios/5/status
+        // PUT: api/Usuarios/5/status 
+        //No Request Body usar "Ativo" ou "Inativo" - aspas são obrigatórias
         [HttpPut("{id}/status")]
         public async Task<IActionResult> PutStatus(int id, [FromBody] string status)
         {
