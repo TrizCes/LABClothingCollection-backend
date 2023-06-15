@@ -58,6 +58,7 @@ namespace ClothingCollectionAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Usuario>> GetUsuario(int id)
         {
+
             var usuario = await _context.Usuarios.FindAsync(id);
 
             if (usuario == null)
@@ -65,7 +66,7 @@ namespace ClothingCollectionAPI.Controllers
                 return NotFound();
             }
 
-            return usuario;
+            return Ok(usuario);
         }
 
         // POST: api/Usuarios
