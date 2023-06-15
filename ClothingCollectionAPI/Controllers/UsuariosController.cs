@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClothingCollectionAPI.Context;
 using ClothingCollectionAPI.Models;
+using ClothingCollectionAPI.Interface;
 
 namespace ClothingCollectionAPI.Controllers
 {
@@ -25,14 +26,14 @@ namespace ClothingCollectionAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuario()
         {
-            return await _context.Usuario.ToListAsync();
+            return await _context.Usuarios.ToListAsync();
         }
 
         // GET: api/Usuarios/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Usuario>> GetUsuario(int id)
         {
-            var usuario = await _context.Usuario.FindAsync(id);
+            var usuario = await _context.Usuarios.FindAsync(id);
 
             if (usuario == null)
             {
@@ -40,37 +41,6 @@ namespace ClothingCollectionAPI.Controllers
             }
 
             return usuario;
-        }
-
-        // PUT: api/Usuarios/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuario(int id, Usuario usuario)
-        {
-            if (id != usuario.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(usuario).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UsuarioExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
         // POST: api/Usuarios
@@ -87,13 +57,13 @@ namespace ClothingCollectionAPI.Controllers
                 return BadRequest("Os campos obrigatórios devem ser preenchidos.");
             }
 
-            bool docConflitante = await _context.Usuario.AnyAsync(u => u.CpfOuCnpj == usuario.CpfOuCnpj);
+            bool docConflitante = await _context.Usuarios.AnyAsync(u => u.CpfOuCnpj == usuario.CpfOuCnpj);
             if (docConflitante)
             {
                 return Conflict("O CPF ou CNPJ informado já foi cadastrado.");
             }
 
-            _context.Usuario.Add(usuario);
+            _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction( 
@@ -105,17 +75,53 @@ namespace ClothingCollectionAPI.Controllers
                 );
         }
 
+        // PUT: api/Usuarios/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] IUsuarioAtualizacao usuario)
+        {
+            bool existeUsuario = await _context.Usuarios
+                                .AnyAsync(x => x.Id == id) 
+                                .ConfigureAwait(true);
+            if (!existeUsuario)
+            {
+                return BadRequest("Identificador não consta nos nossos arquivos");
+            }
+
+            _context.Entry(usuario).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UsuarioExists(id))
+                {
+                    return NotFound("Erro ao buscar o registro");
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Ok(usuario);
+        }
+
+
+
         // DELETE: api/Usuarios/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(int id)
         {
-            var usuario = await _context.Usuario.FindAsync(id);
+            var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario == null)
             {
                 return NotFound();
             }
 
-            _context.Usuario.Remove(usuario);
+            _context.Usuarios.Remove(usuario);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -123,7 +129,7 @@ namespace ClothingCollectionAPI.Controllers
 
         private bool UsuarioExists(int id)
         {
-            return _context.Usuario.Any(e => e.Id == id);
+            return _context.Usuarios.Any(e => e.Id == id);
         }
     }
 }
