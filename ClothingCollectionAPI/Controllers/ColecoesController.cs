@@ -180,10 +180,13 @@ namespace ClothingCollectionAPI.Controllers
         }
 
         // DELETE: api/Colecoes/:id
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteColecao(int id)
         {
             var colecao = await _context.Colecoes.FindAsync(id);
+
             if (colecao == null)
             {
                 return NotFound();
