@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClothingCollectionAPI.Models;
-using ClothingCollectionAPI.Services;
+using ClothingCollectionAPI.DTO;
+
 
 namespace ClothingCollectionAPI.Controllers
 {
@@ -40,6 +41,31 @@ namespace ClothingCollectionAPI.Controllers
             }
 
             return colecao;
+        }
+
+        // POST: api/Colecoes
+        [HttpPost]
+        public async Task<ActionResult<Colecao>> PostColecao([FromBody] Colecao colecao)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            bool nomeConflitante = await _context.Colecoes
+                                            .AnyAsync(u =>
+                                            u.NomeColecao == colecao.NomeColecao);
+            if (nomeConflitante)
+            {
+                return Conflict("Já existe uma coleção cadastrada com esse nome");
+            }
+
+            _context.Colecoes.Add(colecao);
+
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetColecao), new { id = colecao.Id }, colecao);
         }
 
         // PUT: api/Colecoes/5
@@ -82,29 +108,39 @@ namespace ClothingCollectionAPI.Controllers
             return Ok(colecao);
         }
 
-        // POST: api/Colecoes
-        [HttpPost]
-        public async Task<ActionResult<Colecao>> PostColecao([FromBody] Colecao colecao)
+        // PUT: api/Colecoes/5/status
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}/status")]
+        public async Task<IActionResult> PutColecao(int id, [FromBody] StatusDto status)
         {
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            bool nomeConflitante = await _context.Colecoes
-                                            .AnyAsync(u =>
-                                            u.NomeColecao == colecao.NomeColecao);
-            if (nomeConflitante)
+            bool existeColecao = await _context.Colecoes
+                                .AnyAsync(x => x.Id == id)
+                                .ConfigureAwait(true);
+            if (!existeColecao)
             {
-                return Conflict("Já existe uma coleção cadastrada com esse nome");
+                return NotFound("Identificador não consta nos nossos arquivos");
             }
 
-            _context.Colecoes.Add(colecao);
+            var colecao = await _context.Colecoes.FindAsync(id);
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                colecao.EstadoSistema = status.Status;
 
-            return CreatedAtAction(nameof(GetColecao), new { id = colecao.Id }, colecao);
+                _context.Entry(colecao).State = EntityState.Modified;
+                            
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return BadRequest();
+            }
+            return Ok(colecao);
         }
 
         // DELETE: api/Colecoes/5
