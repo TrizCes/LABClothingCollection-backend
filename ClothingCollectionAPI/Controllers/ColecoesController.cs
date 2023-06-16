@@ -23,10 +23,36 @@ namespace ClothingCollectionAPI.Controllers
         }
 
         // GET: api/Colecoes
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Colecao>>> GetColecoes()
+        public async Task<ActionResult<IEnumerable<Colecao>>> GetColecoes([FromQuery] StatusDto status)
         {
-            return await _context.Colecoes.ToListAsync();
+            var colecoesLista = await _context.Colecoes.ToListAsync().ConfigureAwait(true);
+
+            if (status.Status != null)
+            {
+                string maiusculaStatus = status.Status.ToUpper();
+
+                if (maiusculaStatus == "ATIVA")
+                {
+                    //verificar usuarios com status igual ativo
+                    var colecoesAtivas = colecoesLista.Where(u =>
+                                                        u.EstadoSistema
+                                                        .ToUpper() == "ATIVA")
+                                                       .ToList();
+                    return Ok(colecoesAtivas);
+                }
+                else if (maiusculaStatus == "INATIVA")
+                {
+                    var colecoesAtivas = colecoesLista.Where(u =>
+                                                    u.EstadoSistema
+                                                    .ToUpper() == "INATIVA")
+                                                   .ToList();
+                    return Ok(colecoesAtivas);
+
+                }
+            }
+                return Ok(colecoesLista);
         }
 
         // GET: api/Colecoes/5
@@ -44,6 +70,9 @@ namespace ClothingCollectionAPI.Controllers
         }
 
         // POST: api/Colecoes
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [HttpPost]
         public async Task<ActionResult<Colecao>> PostColecao([FromBody] Colecao colecao)
         {
@@ -69,7 +98,10 @@ namespace ClothingCollectionAPI.Controllers
         }
 
         // PUT: api/Colecoes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutColecao(int id, [FromBody] Colecao colecao)
         {
@@ -109,7 +141,9 @@ namespace ClothingCollectionAPI.Controllers
         }
 
         // PUT: api/Colecoes/5/status
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPut("{id}/status")]
         public async Task<IActionResult> PutColecao(int id, [FromBody] StatusDto status)
         {

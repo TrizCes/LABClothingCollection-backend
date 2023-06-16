@@ -8,9 +8,8 @@ namespace ClothingCollectionAPI.DTO
 {
     public class StatusDto
     {
-        [Required(ErrorMessage = "O campo é de preenchimento obrigatório")]
         [RegularExpression("^(Ativa|Inativa)$", ErrorMessage = "O campo deve ser 'Ativa' ou 'Inativa'")]
         [MaxLength(60, ErrorMessage = "O campo Estação não pode exceder 60 caracteres")]
-        public String Status { get; set; }
+        public String? Status { get; set; }
     }
 }
