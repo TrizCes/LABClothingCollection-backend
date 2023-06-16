@@ -2,3 +2,43 @@
 
 # dependencies
 /Migrations
+
+
+# Pastas geradas pelo Visual Studio
+/bin/
+/obj/
+
+# Arquivos de configuração local
+appsettings.Development.json
+appsettings.Production.json
+launchSettings.json
+
+# Arquivos de log
+*.log
+
+# Arquivos de usuário
+.vs/
+*.suo
+*.user
+*.userprefs
+*.bak
+*.Cache
+*.DS_Store
+
+# Arquivos de compilação e publicação
+*.dll
+*.exe
+*.pdb
+*.dll.config
+*.exe.config
+*.appx
+*.appxbundle
+*.msix
+*.msi
+*.zip
+
+# Arquivos de publicação do IIS
+PublishProfiles/
+*.pubxml
+*.publishsettings
+
