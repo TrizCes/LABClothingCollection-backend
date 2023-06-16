@@ -55,7 +55,9 @@ namespace ClothingCollectionAPI.Controllers
                 return Ok(colecoesLista);
         }
 
-        // GET: api/Colecoes/5
+        // GET: api/Colecoes/:id
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
         public async Task<ActionResult<Colecao>> GetColecao(int id)
         {
@@ -66,7 +68,7 @@ namespace ClothingCollectionAPI.Controllers
                 return NotFound();
             }
 
-            return colecao;
+            return Ok(colecao);
         }
 
         // POST: api/Colecoes
@@ -97,7 +99,7 @@ namespace ClothingCollectionAPI.Controllers
             return CreatedAtAction(nameof(GetColecao), new { id = colecao.Id }, colecao);
         }
 
-        // PUT: api/Colecoes/5
+        // PUT: api/Colecoes/:id
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -140,7 +142,7 @@ namespace ClothingCollectionAPI.Controllers
             return Ok(colecao);
         }
 
-        // PUT: api/Colecoes/5/status
+        // PUT: api/Colecoes/:id/status
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -177,7 +179,7 @@ namespace ClothingCollectionAPI.Controllers
             return Ok(colecao);
         }
 
-        // DELETE: api/Colecoes/5
+        // DELETE: api/Colecoes/:id
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteColecao(int id)
         {
