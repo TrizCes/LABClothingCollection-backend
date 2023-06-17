@@ -35,15 +35,13 @@ namespace ClothingCollectionAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ClothingCollectionAPI", Version = "v1" });
             });
 
-            services.AddDbContext<UsuariosContext>(options =>
+            services.AddDbContext<LabClothingCollectionContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ServerConnection")));
 
             services.AddControllers().AddNewtonsoftJson(options =>
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
 
-            services.AddDbContext<ColecoesContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("ServerConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
