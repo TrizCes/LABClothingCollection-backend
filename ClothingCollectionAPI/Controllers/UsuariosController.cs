@@ -15,9 +15,9 @@ namespace ClothingCollectionAPI.Controllers
     [ApiController]
     public class UsuariosController : ControllerBase
     {
-        private readonly UsuariosContext _context;
+        private readonly LabClothingCollectionContext _context;
 
-        public UsuariosController(UsuariosContext context)
+        public UsuariosController(LabClothingCollectionContext context)
         {
             _context = context;
         }

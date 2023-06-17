@@ -9,6 +9,7 @@ namespace ClothingCollectionAPI.Models
 {
     public class Colecao
     {
+
         [Key]
         public int Id { get; set; }
 
@@ -27,7 +28,7 @@ namespace ClothingCollectionAPI.Models
 
         [Required(ErrorMessage = "O campo Orçamento é de preenchimento obrigatório")]
         [DataType(DataType.Currency)]
-        public decimal Orcamento { get; set; }
+        public double Orcamento { get; set; }
 
         [Required(ErrorMessage = "O campo Ano de lançamento é de preenchimento obrigatório")]
         [DataType(DataType.Date)]

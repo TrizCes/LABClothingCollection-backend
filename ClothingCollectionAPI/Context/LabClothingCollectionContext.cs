@@ -7,16 +7,17 @@ using ClothingCollectionAPI.Models;
 
 namespace ClothingCollectionAPI.Context
 {
-    public class UsuariosContext : DbContext
+    public class LabClothingCollectionContext : DbContext
     {
-        public UsuariosContext(DbContextOptions<UsuariosContext> options)
+        public LabClothingCollectionContext(DbContextOptions<LabClothingCollectionContext> options)
             : base(options)
         {
         }
 
-        public UsuariosContext() { }
+        public LabClothingCollectionContext() { }
 
-        public virtual DbSet<ClothingCollectionAPI.Models.Usuario> Usuarios { get; set; }
+        public DbSet<ClothingCollectionAPI.Models.Usuario> Usuarios { get; set; }
+        public DbSet<ClothingCollectionAPI.Models.Colecao> Colecoes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -88,8 +89,64 @@ namespace ClothingCollectionAPI.Context
                                 Email = "carolina@mail.com",
                                 TipoUsuario = "Outro",
                                 StatusUsuario = "Ativo"
-                            }
-               );
+                            });
+
+            modelBuilder.Entity<Colecao>().HasData(
+                            new Colecao
+                    {
+                        Id = 1,
+                        NomeColecao = "Floresta Urbana",
+                        IdResponsavel = 1,
+                        Marca = "Brasília Fashion",
+                        Orcamento = 2000.00,
+                        AnoLancamento = new DateTime(2023, 1, 1),
+                        Estacao = "Inverno",
+                        EstadoSistema = "Ativa"
+                    },
+                            new Colecao
+                    {
+                        Id = 2,
+                        NomeColecao = "Tropical Vibes",
+                        IdResponsavel = 2,
+                        Marca = "Rio Style",
+                        Orcamento = 1500.00,
+                        AnoLancamento = new DateTime(2023, 4, 15),
+                        Estacao = "Verão",
+                        EstadoSistema = "Ativa"
+                    },
+                            new Colecao
+                    {
+                        Id = 3,
+                        NomeColecao = "Retro Chic",
+                        IdResponsavel = 3,
+                        Marca = "São Paulo Couture",
+                        Orcamento = 3000.00,
+                        AnoLancamento = new DateTime(2023, 9, 1),
+                        Estacao = "Primavera",
+                        EstadoSistema = "Ativa"
+                    },
+                            new Colecao
+                    {
+                        Id = 4,
+                        NomeColecao = "Dark Elegance",
+                        IdResponsavel = 4,
+                        Marca = "Gothic Glam",
+                        Orcamento = 2500.00,
+                        AnoLancamento = new DateTime(2023, 6, 30),
+                        Estacao = "Outono",
+                        EstadoSistema = "Ativa"
+                    },
+                            new Colecao
+                            {
+                                Id = 5,
+                                NomeColecao = "Boho Dreams",
+                                IdResponsavel = 5,
+                                Marca = "Bahia Bohemia",
+                                Orcamento = 1800.00,
+                                AnoLancamento = new DateTime(2023, 2, 10),
+                                Estacao = "Verão",
+                                EstadoSistema = "Ativa"
+                            });
 
         }
     }

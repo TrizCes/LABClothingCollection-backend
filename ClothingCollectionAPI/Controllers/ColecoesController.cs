@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClothingCollectionAPI.Models;
 using ClothingCollectionAPI.DTO;
-
+using ClothingCollectionAPI.Context;
 
 namespace ClothingCollectionAPI.Controllers
 {
@@ -15,9 +15,9 @@ namespace ClothingCollectionAPI.Controllers
     [ApiController]
     public class ColecoesController : ControllerBase
     {
-        private readonly ColecoesContext _context;
+        private readonly LabClothingCollectionContext _context;
 
-        public ColecoesController(ColecoesContext context)
+        public ColecoesController(LabClothingCollectionContext context)
         {
             _context = context;
         }
@@ -25,13 +25,13 @@ namespace ClothingCollectionAPI.Controllers
         // GET: api/Colecoes
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Colecao>>> GetColecoes([FromQuery] StatusDto status)
+        public async Task<ActionResult<IEnumerable<Colecao>>> GetColecoes([FromQuery] String status)
         {
             var colecoesLista = await _context.Colecoes.ToListAsync().ConfigureAwait(true);
 
-            if (status.Status != null)
+            if (status != null)
             {
-                string maiusculaStatus = status.Status.ToUpper();
+                string maiusculaStatus = status.ToUpper();
 
                 if (maiusculaStatus == "ATIVA")
                 {
@@ -44,11 +44,11 @@ namespace ClothingCollectionAPI.Controllers
                 }
                 else if (maiusculaStatus == "INATIVA")
                 {
-                    var colecoesAtivas = colecoesLista.Where(u =>
+                    var colecoesInativas = colecoesLista.Where(u =>
                                                     u.EstadoSistema
                                                     .ToUpper() == "INATIVA")
                                                    .ToList();
-                    return Ok(colecoesAtivas);
+                    return Ok(colecoesInativas);
 
                 }
             }
@@ -122,10 +122,11 @@ namespace ClothingCollectionAPI.Controllers
 
             bool nomeConflitante = await _context.Colecoes
                                             .AnyAsync(u =>
-                                            u.NomeColecao == colecao.NomeColecao);
+                                            u.NomeColecao == colecao.NomeColecao 
+                                            && u.Id != colecao.Id);
             if (nomeConflitante)
             {
-                return Conflict("Já existe uma coleção cadastrada com esse nome");
+                return Conflict("Já existe uma coleção cadastrada com esse nome (É necessário informar o id no Request Body)");
             }
 
             _context.Entry(colecao).State = EntityState.Modified;
