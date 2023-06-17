@@ -18,6 +18,7 @@ namespace ClothingCollectionAPI.Context
 
         public DbSet<ClothingCollectionAPI.Models.Usuario> Usuarios { get; set; }
         public DbSet<ClothingCollectionAPI.Models.Colecao> Colecoes { get; set; }
+        public DbSet<ClothingCollectionAPI.Models.Modelo> Modelo { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
