@@ -67,6 +67,8 @@ namespace ClothingCollectionAPI.Controllers
 
 
         // GET: api/Modelos/5
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
         public async Task<ActionResult<Modelo>> GetModelo(int id)
         {
@@ -74,10 +76,10 @@ namespace ClothingCollectionAPI.Controllers
 
             if (modelo == null)
             {
-                return NotFound();
+                return NotFound("Modelo não encontrado");
             }
 
-            return modelo;
+            return Ok(modelo);
         }
 
 
