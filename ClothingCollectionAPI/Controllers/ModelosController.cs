@@ -21,12 +21,50 @@ namespace ClothingCollectionAPI.Controllers
             _context = context;
         }
 
+
         // GET: api/Modelos
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Modelo>>> GetModelos()
+        public async Task<ActionResult<IEnumerable<Modelo>>> GetModelos([FromQuery] String layout)
         {
-            return await _context.Modelo.ToListAsync();
+            var modelosLista = await _context.Modelo.ToListAsync();
+
+            if (layout != null)
+            {
+                string maiusculaStatus = layout.ToUpper();
+
+                if (maiusculaStatus == "BORDADO")
+                {
+                    //verificar usuarios com status igual ativo
+                    var layoutBordado = modelosLista.Where(u =>
+                                                        u.Layout
+                                                        .ToUpper() == "BORDADO")
+                                                       .ToList();
+                    return Ok(layoutBordado);
+                }
+                else if (maiusculaStatus == "ESTAMPA")
+                {
+                    var layoutEstampa = modelosLista.Where(u =>
+                                                    u.Layout
+                                                    .ToUpper() == "ESTAMPA")
+                                                   .ToList();
+                    return Ok(layoutEstampa);
+
+                }
+                else if (maiusculaStatus == "LISO")
+                {
+                    var layoutLiso = modelosLista.Where(u =>
+                                                    u.Layout
+                                                    .ToUpper() == "LISO")
+                                                   .ToList();
+                    return Ok(layoutLiso);
+
+                }
+            }
+
+            return Ok(modelosLista);
         }
+
 
         // GET: api/Modelos/5
         [HttpGet("{id}")]
@@ -42,8 +80,8 @@ namespace ClothingCollectionAPI.Controllers
             return modelo;
         }
 
+
         // PUT: api/Modelos/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -91,7 +129,6 @@ namespace ClothingCollectionAPI.Controllers
         }
 
         // POST: api/Modelos
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
