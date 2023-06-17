@@ -149,6 +149,48 @@ namespace ClothingCollectionAPI.Context
                                 EstadoSistema = "Ativa"
                             });
 
+            modelBuilder.Entity<Modelo>().HasData(
+                            new Modelo
+                            {
+                                Id = 1,
+                                NomeModelo = "Vestido Transpassado",
+                                IdColecao = 1,
+                                Tipo = "Vestido", 
+                                Layout = "Liso"
+                            },
+                            new Modelo
+                            {
+                                Id = 2,
+                                NomeModelo = "Conjunto Rio'n",
+                                IdColecao = 2,
+                                Tipo = "Biquini",
+                                Layout = "Estampa"
+                            },
+                            new Modelo
+                            {
+                                Id = 3,
+                                NomeModelo = "Pantalona",
+                                IdColecao = 3,
+                                Tipo = "Calça",
+                                Layout = "Liso"
+                            },
+                            new Modelo
+                            {
+                                Id = 4,
+                                NomeModelo = "Coturno",
+                                IdColecao = 4,
+                                Tipo = "Calçados",
+                                Layout = "Liso"
+                            },
+                            new Modelo
+                            {
+                                Id = 5,
+                                NomeModelo = "Vestido delicate",
+                                IdColecao = 5,
+                                Tipo = "Vestido",
+                                Layout = "Bordado"
+                            });
+
         }
     }
 }
