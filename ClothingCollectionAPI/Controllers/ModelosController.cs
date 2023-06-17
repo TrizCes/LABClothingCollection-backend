@@ -44,12 +44,29 @@ namespace ClothingCollectionAPI.Controllers
 
         // PUT: api/Modelos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutModelo(int id, Modelo modelo)
+        public async Task<IActionResult> PutModelo(int id, [FromBody] Modelo modelo)
         {
             if (id != modelo.Id)
             {
                 return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            bool nomeConflitante = await _context.Modelo
+                                            .AnyAsync(u =>
+                                            u.NomeModelo == modelo.NomeModelo);
+            if (nomeConflitante)
+            {
+                return Conflict("Já existe um modelo cadastrado com esse nome");
             }
 
             _context.Entry(modelo).State = EntityState.Modified;
