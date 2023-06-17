@@ -157,10 +157,13 @@ namespace ClothingCollectionAPI.Controllers
         }
 
         // DELETE: api/Modelos/5
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteModelo(int id)
         {
             var modelo = await _context.Modelo.FindAsync(id);
+
             if (modelo == null)
             {
                 return NotFound();
