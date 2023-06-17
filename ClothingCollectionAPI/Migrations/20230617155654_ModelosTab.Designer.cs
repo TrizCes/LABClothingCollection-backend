@@ -4,14 +4,16 @@ using ClothingCollectionAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ClothingCollectionAPI.Migrations
 {
     [DbContext(typeof(LabClothingCollectionContext))]
-    partial class LabClothingCollectionContextModelSnapshot : ModelSnapshot
+    [Migration("20230617155654_ModelosTab")]
+    partial class ModelosTab
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -149,48 +151,6 @@ namespace ClothingCollectionAPI.Migrations
                     b.HasIndex("IdColecao");
 
                     b.ToTable("Modelo");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IdColecao = 1,
-                            Layout = "Liso",
-                            NomeModelo = "Vestido Transpassado",
-                            Tipo = "Vestido"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            IdColecao = 2,
-                            Layout = "Estampa",
-                            NomeModelo = "Conjunto Rio'n",
-                            Tipo = "Biquini"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            IdColecao = 3,
-                            Layout = "Liso",
-                            NomeModelo = "Pantalona",
-                            Tipo = "Calça"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            IdColecao = 4,
-                            Layout = "Liso",
-                            NomeModelo = "Coturno",
-                            Tipo = "Calçados"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            IdColecao = 5,
-                            Layout = "Bordado",
-                            NomeModelo = "Vestido delicate",
-                            Tipo = "Vestido"
-                        });
                 });
 
             modelBuilder.Entity("ClothingCollectionAPI.Models.Usuario", b =>
