@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClothingCollectionAPI.Models;
-using ClothingCollectionAPI.DTO;
 using ClothingCollectionAPI.Context;
+using ClothingCollectionAPI.Models.Enums;
+using AutoMapper;
+using ClothingCollectionAPI.DTO.Response;
 
 namespace ClothingCollectionAPI.Controllers
 {
@@ -25,34 +26,17 @@ namespace ClothingCollectionAPI.Controllers
         // GET: api/Colecoes
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Colecao>>> GetColecoes([FromQuery] String status)
+        public async Task<ActionResult<IEnumerable<Colecao>>> GetColecoes([FromQuery] EnumStatus? status)
         {
-            var colecoesLista = await _context.Colecoes.ToListAsync().ConfigureAwait(true);
+            List<Colecao> colecoes = await _context.Colecoes.Where(x => status != null ? x.EstadoSistema == status : x.EstadoSistema != null).ToListAsync();
 
-            if (status != null)
-            {
-                string maiusculaStatus = status.ToUpper();
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<Colecao, ColecaoResponseDTO>());
 
-                if (maiusculaStatus == "ATIVA")
-                {
-                    //verificar usuarios com status igual ativo
-                    var colecoesAtivas = colecoesLista.Where(u =>
-                                                        u.EstadoSistema
-                                                        .ToUpper() == "ATIVA")
-                                                       .ToList();
-                    return Ok(colecoesAtivas);
-                }
-                else if (maiusculaStatus == "INATIVA")
-                {
-                    var colecoesInativas = colecoesLista.Where(u =>
-                                                    u.EstadoSistema
-                                                    .ToUpper() == "INATIVA")
-                                                   .ToList();
-                    return Ok(colecoesInativas);
+            var mapper = config.CreateMapper();
 
-                }
-            }
-                return Ok(colecoesLista);
+            List<ColecaoResponseDTO> colecoesResponseDTO = mapper.Map<List<ColecaoResponseDTO>>(colecoes);
+
+            return Ok(colecoesResponseDTO);
         }
 
         // GET: api/Colecoes/:id
@@ -68,7 +52,13 @@ namespace ClothingCollectionAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(colecao);
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<Colecao, ColecaoResponseDTO>());
+
+            var mapper = config.CreateMapper();
+
+            ColecaoResponseDTO colecaoResponseDTO = mapper.Map<ColecaoResponseDTO>(colecao);
+
+            return Ok(colecaoResponseDTO);
         }
 
         // POST: api/Colecoes
@@ -96,7 +86,13 @@ namespace ClothingCollectionAPI.Controllers
 
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetColecao), new { id = colecao.Id }, colecao);
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<Colecao, ColecaoResponseDTO>());
+
+            var mapper = config.CreateMapper();
+
+            ColecaoResponseDTO colecaoResponseDTO = mapper.Map<ColecaoResponseDTO>(colecao);
+
+            return CreatedAtAction(nameof(GetColecao), new { id = colecaoResponseDTO.Id }, colecaoResponseDTO);
         }
 
         // PUT: api/Colecoes/:id
@@ -140,15 +136,21 @@ namespace ClothingCollectionAPI.Controllers
                 return BadRequest();    
             }
 
-            return Ok(colecao);
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<Colecao, ColecaoResponseDTO>());
+
+            var mapper = config.CreateMapper();
+
+            ColecaoResponseDTO colecaoResponseDTO = mapper.Map<ColecaoResponseDTO>(colecao);
+
+            return Ok(colecaoResponseDTO);
         }
 
-        // PUT: api/Colecoes/:id/status
+        // PATCH: api/Colecoes/:id/status
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpPut("{id}/status")]
-        public async Task<IActionResult> PutColecao(int id, [FromBody] StatusDto status)
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> PatchColecao(int id, [FromQuery] EnumStatus status)
         {
             if (!ModelState.IsValid)
             {
@@ -167,7 +169,7 @@ namespace ClothingCollectionAPI.Controllers
 
             try
             {
-                colecao.EstadoSistema = status.Status;
+                colecao.EstadoSistema = status;
 
                 _context.Entry(colecao).State = EntityState.Modified;
                             
@@ -177,7 +179,14 @@ namespace ClothingCollectionAPI.Controllers
             {
                 return BadRequest();
             }
-            return Ok(colecao);
+
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<Colecao, ColecaoResponseDTO>());
+
+            var mapper = config.CreateMapper();
+
+            ColecaoResponseDTO colecaoResponseDTO = mapper.Map<ColecaoResponseDTO>(colecao);
+
+            return Ok(colecaoResponseDTO);
         }
 
         // DELETE: api/Colecoes/:id

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ClothingCollectionAPI.Models
 {
@@ -28,7 +25,6 @@ namespace ClothingCollectionAPI.Models
 
         [Required(ErrorMessage = "O campo Telefone é de preenchimento obrigatório")]
         [MaxLength(25, ErrorMessage = "O campo Telefone deve ser preenchido corretamente")]
-
         public String Telefone { get; set; }
     }
 }

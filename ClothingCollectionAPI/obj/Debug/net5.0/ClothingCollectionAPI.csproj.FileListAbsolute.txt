@@ -136,3 +136,4 @@ C:\Users\alex\Documents\Dev\DEVinHouse\Modulo2\Projeto\LABClothingCollection-bac
 C:\Users\alex\Documents\Dev\DEVinHouse\Modulo2\Projeto\LABClothingCollection-backend\ClothingCollectionAPI\bin\Debug\net5.0\Microsoft.AspNetCore.JsonPatch.dll
 C:\Users\alex\Documents\Dev\DEVinHouse\Modulo2\Projeto\LABClothingCollection-backend\ClothingCollectionAPI\bin\Debug\net5.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 C:\Users\alex\Documents\Dev\DEVinHouse\Modulo2\Projeto\LABClothingCollection-backend\ClothingCollectionAPI\bin\Debug\net5.0\Newtonsoft.Json.Bson.dll
+C:\Users\alex\Documents\Dev\DEVinHouse\Modulo2\Projeto\LABClothingCollection-backend\ClothingCollectionAPI\bin\Debug\net5.0\AutoMapper.dll

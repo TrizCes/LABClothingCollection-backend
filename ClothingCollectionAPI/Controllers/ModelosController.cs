@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClothingCollectionAPI.Context;
 using ClothingCollectionAPI.Models;
+using ClothingCollectionAPI.Models.Enums;
+using AutoMapper;
+using ClothingCollectionAPI.DTO.Response;
 
 namespace ClothingCollectionAPI.Controllers
 {
@@ -25,44 +27,18 @@ namespace ClothingCollectionAPI.Controllers
         // GET: api/Modelos
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Modelo>>> GetModelos([FromQuery] String layout)
+        public async Task<ActionResult<IEnumerable<Modelo>>> GetModelos([FromQuery] EnumLayout? layout)
         {
-            var modelosLista = await _context.Modelo.ToListAsync();
 
-            if (layout != null)
-            {
-                string maiusculaStatus = layout.ToUpper();
+            List<Modelo> modelos = await _context.Modelos.Where(x => layout != null ? x.Layout == layout : x.Layout != null).ToListAsync();
 
-                if (maiusculaStatus == "BORDADO")
-                {
-                    //verificar usuarios com status igual ativo
-                    var layoutBordado = modelosLista.Where(u =>
-                                                        u.Layout
-                                                        .ToUpper() == "BORDADO")
-                                                       .ToList();
-                    return Ok(layoutBordado);
-                }
-                else if (maiusculaStatus == "ESTAMPA")
-                {
-                    var layoutEstampa = modelosLista.Where(u =>
-                                                    u.Layout
-                                                    .ToUpper() == "ESTAMPA")
-                                                   .ToList();
-                    return Ok(layoutEstampa);
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<Modelo, ModeloResponseDTO>());
 
-                }
-                else if (maiusculaStatus == "LISO")
-                {
-                    var layoutLiso = modelosLista.Where(u =>
-                                                    u.Layout
-                                                    .ToUpper() == "LISO")
-                                                   .ToList();
-                    return Ok(layoutLiso);
+            var mapper = config.CreateMapper();
 
-                }
-            }
-
-            return Ok(modelosLista);
+            List<ModeloResponseDTO> modelosResponseDTO = mapper.Map<List<ModeloResponseDTO>>(modelos);
+            
+            return Ok(modelosResponseDTO);
         }
 
 
@@ -72,16 +48,54 @@ namespace ClothingCollectionAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Modelo>> GetModelo(int id)
         {
-            var modelo = await _context.Modelo.FindAsync(id);
+            var modelo = await _context.Modelos.FindAsync(id);
 
             if (modelo == null)
             {
                 return NotFound("Modelo não encontrado");
             }
 
-            return Ok(modelo);
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<Modelo, ModeloResponseDTO>());
+
+            var mapper = config.CreateMapper();
+
+            ModeloResponseDTO modeloResponseDTO = mapper.Map<ModeloResponseDTO>(modelo);
+
+            return Ok(modeloResponseDTO);
         }
 
+        // POST: api/Modelos
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [HttpPost]
+        public async Task<ActionResult<Modelo>> PostModelo(Modelo modelo)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            bool nomeConflitante = await _context.Modelos
+                                            .AnyAsync(u =>
+                                            u.NomeModelo == modelo.NomeModelo);
+            if (nomeConflitante)
+            {
+                return Conflict("Já existe um modelo cadastrado com esse nome");
+            }
+
+            _context.Modelos.Add(modelo);
+
+            await _context.SaveChangesAsync();
+
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<Modelo, ModeloResponseDTO>());
+
+            var mapper = config.CreateMapper();
+
+            ModeloResponseDTO modeloResponseDTO = mapper.Map<ModeloResponseDTO>(modelo);
+
+            return CreatedAtAction(nameof(GetModelo), new { id = modeloResponseDTO.Id }, modeloResponseDTO);
+        }
 
         // PUT: api/Modelos/5
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -101,7 +115,7 @@ namespace ClothingCollectionAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            bool nomeConflitante = await _context.Modelo
+            bool nomeConflitante = await _context.Modelos
                                             .AnyAsync(u =>
                                             u.NomeModelo == modelo.NomeModelo);
             if (nomeConflitante)
@@ -127,33 +141,13 @@ namespace ClothingCollectionAPI.Controllers
                 }
             }
 
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<Modelo, ModeloResponseDTO>());
+
+            var mapper = config.CreateMapper();
+
+            ModeloResponseDTO modeloResponseDTO = mapper.Map<ModeloResponseDTO>(modelo);
+
             return NoContent();
-        }
-
-        // POST: api/Modelos
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        [HttpPost]
-        public async Task<ActionResult<Modelo>> PostModelo(Modelo modelo)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            bool nomeConflitante = await _context.Modelo
-                                            .AnyAsync(u =>
-                                            u.NomeModelo == modelo.NomeModelo);
-            if (nomeConflitante)
-            {
-                return Conflict("Já existe um modelo cadastrado com esse nome");
-            }
-
-            _context.Modelo.Add(modelo);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetModelo), new { id = modelo.Id }, modelo);
         }
 
         // DELETE: api/Modelos/5
@@ -162,14 +156,14 @@ namespace ClothingCollectionAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteModelo(int id)
         {
-            var modelo = await _context.Modelo.FindAsync(id);
+            var modelo = await _context.Modelos.FindAsync(id);
 
             if (modelo == null)
             {
                 return NotFound();
             }
 
-            _context.Modelo.Remove(modelo);
+            _context.Modelos.Remove(modelo);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -177,7 +171,7 @@ namespace ClothingCollectionAPI.Controllers
 
         private bool ModeloExists(int id)
         {
-            return _context.Modelo.Any(e => e.Id == id);
+            return _context.Modelos.Any(e => e.Id == id);
         }
     }
 }
