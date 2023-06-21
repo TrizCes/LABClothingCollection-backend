@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClothingCollectionAPI.Migrations
 {
     [DbContext(typeof(LabClothingCollectionContext))]
-    [Migration("20230617155654_ModelosTab")]
-    partial class ModelosTab
+    [Migration("20230621183527_createDBwithEnums")]
+    partial class createDBwithEnums
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,15 +31,11 @@ namespace ClothingCollectionAPI.Migrations
                     b.Property<DateTime>("AnoLancamento")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Estacao")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                    b.Property<int>("Estacao")
+                        .HasColumnType("int");
 
-                    b.Property<string>("EstadoSistema")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                    b.Property<int>("EstadoSistema")
+                        .HasColumnType("int");
 
                     b.Property<int>("IdResponsavel")
                         .HasColumnType("int");
@@ -59,8 +55,6 @@ namespace ClothingCollectionAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdResponsavel");
-
                     b.ToTable("Colecoes");
 
                     b.HasData(
@@ -68,8 +62,8 @@ namespace ClothingCollectionAPI.Migrations
                         {
                             Id = 1,
                             AnoLancamento = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Estacao = "Inverno",
-                            EstadoSistema = "Ativa",
+                            Estacao = 0,
+                            EstadoSistema = 0,
                             IdResponsavel = 1,
                             Marca = "Brasília Fashion",
                             NomeColecao = "Floresta Urbana",
@@ -79,8 +73,8 @@ namespace ClothingCollectionAPI.Migrations
                         {
                             Id = 2,
                             AnoLancamento = new DateTime(2023, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Estacao = "Verão",
-                            EstadoSistema = "Ativa",
+                            Estacao = 3,
+                            EstadoSistema = 0,
                             IdResponsavel = 2,
                             Marca = "Rio Style",
                             NomeColecao = "Tropical Vibes",
@@ -90,8 +84,8 @@ namespace ClothingCollectionAPI.Migrations
                         {
                             Id = 3,
                             AnoLancamento = new DateTime(2023, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Estacao = "Primavera",
-                            EstadoSistema = "Ativa",
+                            Estacao = 1,
+                            EstadoSistema = 1,
                             IdResponsavel = 3,
                             Marca = "São Paulo Couture",
                             NomeColecao = "Retro Chic",
@@ -101,8 +95,8 @@ namespace ClothingCollectionAPI.Migrations
                         {
                             Id = 4,
                             AnoLancamento = new DateTime(2023, 6, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Estacao = "Outono",
-                            EstadoSistema = "Ativa",
+                            Estacao = 0,
+                            EstadoSistema = 0,
                             IdResponsavel = 4,
                             Marca = "Gothic Glam",
                             NomeColecao = "Dark Elegance",
@@ -112,8 +106,8 @@ namespace ClothingCollectionAPI.Migrations
                         {
                             Id = 5,
                             AnoLancamento = new DateTime(2023, 2, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Estacao = "Verão",
-                            EstadoSistema = "Ativa",
+                            Estacao = 2,
+                            EstadoSistema = 0,
                             IdResponsavel = 5,
                             Marca = "Bahia Bohemia",
                             NomeColecao = "Boho Dreams",
@@ -131,26 +125,64 @@ namespace ClothingCollectionAPI.Migrations
                     b.Property<int>("IdColecao")
                         .HasColumnType("int");
 
-                    b.Property<string>("Layout")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                    b.Property<int>("Layout")
+                        .HasColumnType("int");
 
                     b.Property<string>("NomeModelo")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("Tipo")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("IdColecao");
 
-                    b.ToTable("Modelo");
+                    b.ToTable("Modelos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IdColecao = 1,
+                            Layout = 2,
+                            NomeModelo = "Saia Transpassada",
+                            Tipo = 8
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IdColecao = 2,
+                            Layout = 0,
+                            NomeModelo = "Conjunto Rio'n",
+                            Tipo = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IdColecao = 3,
+                            Layout = 2,
+                            NomeModelo = "Pantalona",
+                            Tipo = 4
+                        },
+                        new
+                        {
+                            Id = 4,
+                            IdColecao = 4,
+                            Layout = 2,
+                            NomeModelo = "Coturno",
+                            Tipo = 5
+                        },
+                        new
+                        {
+                            Id = 5,
+                            IdColecao = 5,
+                            Layout = 1,
+                            NomeModelo = "Delicate",
+                            Tipo = 6
+                        });
                 });
 
             modelBuilder.Entity("ClothingCollectionAPI.Models.Usuario", b =>
@@ -182,20 +214,16 @@ namespace ClothingCollectionAPI.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("StatusUsuario")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                    b.Property<int>("StatusUsuario")
+                        .HasColumnType("int");
 
                     b.Property<string>("Telefone")
                         .IsRequired()
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
 
-                    b.Property<string>("TipoUsuario")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                    b.Property<int>("TipoUsuario")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -210,9 +238,9 @@ namespace ClothingCollectionAPI.Migrations
                             Email = "maria@mail.com",
                             Genero = "Feminino",
                             NomeCompleto = "Maria Clara Soares",
-                            StatusUsuario = "Ativo",
+                            StatusUsuario = 0,
                             Telefone = "(47) 98895-7456",
-                            TipoUsuario = "Gerente"
+                            TipoUsuario = 1
                         },
                         new
                         {
@@ -222,9 +250,9 @@ namespace ClothingCollectionAPI.Migrations
                             Email = "joao@mail.com",
                             Genero = "Masculino",
                             NomeCompleto = "João da Silva",
-                            StatusUsuario = "Ativo",
+                            StatusUsuario = 0,
                             Telefone = "(47) 97777-1234",
-                            TipoUsuario = "Criador"
+                            TipoUsuario = 2
                         },
                         new
                         {
@@ -234,9 +262,9 @@ namespace ClothingCollectionAPI.Migrations
                             Email = "ana@mail.com",
                             Genero = "Feminino",
                             NomeCompleto = "Ana Oliveira",
-                            StatusUsuario = "Ativo",
+                            StatusUsuario = 0,
                             Telefone = "(47) 94444-5678",
-                            TipoUsuario = "Administrador"
+                            TipoUsuario = 3
                         },
                         new
                         {
@@ -246,9 +274,9 @@ namespace ClothingCollectionAPI.Migrations
                             Email = "pedro@mail.com",
                             Genero = "Masculino",
                             NomeCompleto = "Pedro Santos",
-                            StatusUsuario = "Inativo",
+                            StatusUsuario = 1,
                             Telefone = "(47) 93333-9876",
-                            TipoUsuario = "Outro"
+                            TipoUsuario = 0
                         },
                         new
                         {
@@ -258,21 +286,10 @@ namespace ClothingCollectionAPI.Migrations
                             Email = "carolina@mail.com",
                             Genero = "Feminino",
                             NomeCompleto = "Carolina Fernandes",
-                            StatusUsuario = "Ativo",
+                            StatusUsuario = 0,
                             Telefone = "(47) 91111-2222",
-                            TipoUsuario = "Outro"
+                            TipoUsuario = 0
                         });
-                });
-
-            modelBuilder.Entity("ClothingCollectionAPI.Models.Colecao", b =>
-                {
-                    b.HasOne("ClothingCollectionAPI.Models.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("IdResponsavel")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("ClothingCollectionAPI.Models.Modelo", b =>

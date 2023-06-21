@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ClothingCollectionAPI.Models.Enums;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace ClothingCollectionAPI.Models
 {
@@ -22,15 +21,10 @@ namespace ClothingCollectionAPI.Models
         public Colecao Colecao { get; set; }
 
         [Required(ErrorMessage = "O campo Tipo é de preenchimento obrigatório")]
-        [RegularExpression("^(Bermuda|Biquini|Bolsa|Boné|Calça|Calçados|Camisa|Chapéu|Saia)$", 
-            ErrorMessage = "O campo Tipo deve ser 'Bermuda', 'Biquini', 'Bolsa', 'Boné', 'Calça', 'Calçados', 'Camisa', 'Chapéu' ou 'Saia'")]
-        [MaxLength(60, ErrorMessage = "O campo Tipo não pode exceder 60 caracteres")]
-        public String Tipo { get; set; }
+        public EnumTipoModelo Tipo { get; set; }
 
         [Required(ErrorMessage = "O campo Layout é de preenchimento obrigatório")]
-        [RegularExpression("^(Bordado|Estampa|Liso)$", ErrorMessage = "O campo Layout deve ser 'Bordado', 'Estampa' ou 'Liso'")]
-        [MaxLength(60, ErrorMessage = "O campo Layout não pode exceder 60 caracteres")]
-        public String Layout { get; set; }
+        public EnumLayout Layout { get; set; }
 
     }
 }
