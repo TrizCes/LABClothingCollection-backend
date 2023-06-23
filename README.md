@@ -37,7 +37,7 @@ Antes de prosseguir, verifique se o seguinte software está instalado em seu com
 
 Esta API gerência os dados presentes no banco de dados labclothingcolectionbd.
 No banco de dados estão presentes três tabelas que são: Usuarios, Coleções e Modelos. Modeladas como na imagem asseguir:
-![Modelo Fisico](https://drive.google.com/file/d/1gx1zhvWfjfhz7mahKnvOBlJDPq1Sl_zJ/view?usp=sharing)
+![Modelo Fisico](src/img/db.png)
 
 ## Mais informações
 
