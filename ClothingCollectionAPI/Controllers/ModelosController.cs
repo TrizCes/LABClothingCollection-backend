@@ -117,7 +117,7 @@ namespace ClothingCollectionAPI.Controllers
 
             bool nomeConflitante = await _context.Modelos
                                             .AnyAsync(u =>
-                                            u.NomeModelo == modelo.NomeModelo);
+                                            u.NomeModelo == modelo.NomeModelo && u.Id != modelo.Id);
             if (nomeConflitante)
             {
                 return Conflict("Já existe um modelo cadastrado com esse nome");

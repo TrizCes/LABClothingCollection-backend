@@ -18,7 +18,7 @@ namespace ClothingCollectionAPI.Models
         [ForeignKey("Colecao")]
         [Required(ErrorMessage = "O Id da coleção é de preenchimento obrigatório")]
         public int IdColecao { get; set; }
-        public Colecao Colecao { get; set; }
+        private Colecao Colecao { get; set; }
 
         [Required(ErrorMessage = "O campo Tipo é de preenchimento obrigatório")]
         public EnumTipoModelo Tipo { get; set; }
