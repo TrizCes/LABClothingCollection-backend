@@ -41,6 +41,6 @@ No banco de dados estão presentes três tabelas que são: Usuarios, Coleções 
 
 ## Mais informações
 
-- Video de apresentação [aqui]()
+- Video de apresentação [aqui](https://drive.google.com/file/d/18EB3iBh6_a434P8tKNaQSQ1p4virUk9C/view?usp=sharing)
 
 - Primeira parte do projeto (Front-End) [aqui](https://github.com/TrizCes/labClothingCollection)
